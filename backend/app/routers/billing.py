@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 from app.core.dependencies import get_current_user
 from app.db.database import get_db
 from app.models.user import User
-from app.models.subcription import Subscription
+from app.models.subscription import Subscription
 from app.services.billing_service import create_checkout_session
 from app.schemas.billing import CheckoutResponse, SubscriptionDetailsResponse
 from app.core.config import STRIPE_SECRET_KEY, PLAN_LIMITS

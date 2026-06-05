@@ -1,7 +1,6 @@
 import { useState } from "react";
 import API from "../api/axios";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../components/Navbar";
 
 export default function CreateTask() {
   const [form, setForm] = useState({
@@ -20,8 +19,7 @@ export default function CreateTask() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100">
-      <Navbar />
+    <div>
       <div className="max-w-2xl mx-auto px-4 py-8">
         <form
           onSubmit={handleSubmit}

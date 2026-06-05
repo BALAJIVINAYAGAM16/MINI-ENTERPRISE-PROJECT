@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.db.database import get_db
-from app.services.subcription_service import upgrade_plan
+from app.services.subscription_service import upgrade_plan
 from app.schemas.subscription import UpgradePlanRequest, SubscriptionResponse
 
 router = APIRouter(

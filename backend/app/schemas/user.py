@@ -1,6 +1,7 @@
 from datetime import datetime
 from enum import Enum
-from pydantic import BaseModel, EmailStr, Field, field_validator
+from pydantic import BaseModel, Field, field_validator
+import re
 
 from app.core.security import BCRYPT_MAX_PASSWORD_BYTES
 from app.core.validation import sanitize_text
@@ -10,17 +11,27 @@ class UserRole(str, Enum):
     admin = "admin"
     manager = "manager"
     employee = "employee"
+    auditor = "auditor"
 
 
 class UserBase(BaseModel):
     name: str = Field(..., min_length=2, max_length=100)
-    email: EmailStr
+    email: str = Field(..., pattern=r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
     role: UserRole
 
     @field_validator("name")
     @classmethod
     def sanitize_name(cls, value: str) -> str:
         return sanitize_text(value)
+    
+    @field_validator("email")
+    @classmethod
+    def validate_email(cls, value: str) -> str:
+        # Allow test domains like .test for development
+        email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        if not re.match(email_pattern, value):
+            raise ValueError("Invalid email address")
+        return value.lower()
 
 
 class UserCreate(UserBase):
@@ -35,7 +46,7 @@ class UserCreate(UserBase):
 
 
 class UserLogin(BaseModel):
-    email: EmailStr
+    email: str = Field(..., pattern=r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
     password: str
 
 

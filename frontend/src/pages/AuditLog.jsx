@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import API from "../api/axios";
-import Sidebar from "../components/Sidebar";
 import { toast } from "../utils/toast";
 
 export default function AuditLog() {
@@ -139,11 +138,7 @@ export default function AuditLog() {
   }, [filter]);
 
   return (
-    <div className="flex">
-
-      <Sidebar />
-
-      <div className="flex-1 p-6 bg-gray-50 min-h-screen">
+    <div className="p-6 bg-gray-50">
 
         {/* Header */}
         <h1 className="text-3xl font-bold mb-6">
@@ -432,8 +427,6 @@ export default function AuditLog() {
           ))}
 
         </div>
-
-      </div>
 
     </div>
   );

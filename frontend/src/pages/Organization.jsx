@@ -1,6 +1,4 @@
 import { useState, useEffect } from "react";
-import Sidebar from "../components/Sidebar";
-import Navbar from "../components/Navbar";
 import API from "../api/axios";
 
 export default function Organization() {
@@ -90,40 +88,16 @@ export default function Organization() {
   if (loading) {
 
     return (
-      <div className="flex bg-gray-100 min-h-screen">
-
-        <Sidebar />
-
-        <div className="flex-1">
-
-          <Navbar />
-
-          <div className="p-8">
-            <p className="text-lg font-medium">
-              Loading...
-            </p>
-          </div>
-
-        </div>
-
+      <div className="p-8">
+        <p className="text-lg font-medium">
+          Loading...
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="flex bg-gray-100 min-h-screen">
-
-      {/* Sidebar */}
-      <Sidebar />
-
-      {/* Main Content */}
-      <div className="flex-1">
-
-        {/* Navbar */}
-        <Navbar />
-
-        {/* Content */}
-        <div className="p-8">
+    <div className="p-8">
 
           {/* Header */}
           <div className="mb-8">
@@ -212,10 +186,6 @@ export default function Organization() {
             </div>
 
           </div>
-
-        </div>
-
-      </div>
 
     </div>
   );

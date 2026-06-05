@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import API from "../api/axios";
-import Sidebar from "../components/Sidebar";
 import NotificationBell from "../components/NotificationBell";
 import { toast } from "../utils/toast";
 import { useAuth } from "../context/auth-context";
@@ -121,10 +120,7 @@ export default function Documents() {
   };
 
   return (
-    <div className="flex">
-      <Sidebar />
-
-      <div className="flex-1 p-6 bg-gray-50">
+    <div className="p-6 bg-gray-50">
         <div className="mb-6 flex items-center justify-between gap-4">
           <h1 className="text-3xl font-bold">Document Management</h1>
           <NotificationBell />
@@ -221,7 +217,6 @@ export default function Documents() {
             </div>
           )}
         </div>
-      </div>
     </div>
   );
 }

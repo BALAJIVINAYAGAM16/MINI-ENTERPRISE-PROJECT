@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import API from "../api/axios";
-import Navbar from "./Navbar";
 
 export default function ApprovalPanel() {
   const [approvals, setApprovals] = useState([]);
@@ -73,9 +72,7 @@ export default function ApprovalPanel() {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen">
-      <Navbar />
-      <main className="p-6">
+    <div className="p-6">
         <h1 className="text-2xl font-bold mb-6">Approval System</h1>
         {error && <div className="mb-4 rounded bg-red-100 p-3 text-sm text-red-700">{error}</div>}
 
@@ -183,7 +180,6 @@ export default function ApprovalPanel() {
           ))}
           </div>
         )}
-      </main>
     </div>
   );
 }

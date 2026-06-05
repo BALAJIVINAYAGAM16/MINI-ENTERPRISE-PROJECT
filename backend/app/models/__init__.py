@@ -14,7 +14,13 @@ from app.models.sla_tracking import SLATracking
 from app.models.approval_escalation import ApprovalEscalation
 from app.models.approval_delegation import ApprovalDelegation
 from app.models.notification_preference import NotificationPreference
-from app.models.subcription import Subscription
+from app.models.subscription import Subscription
+from app.models.tenant_onboarding import TenantOnboarding
+from app.models.tenant_collaboration import TenantCollaborationSettings, TenantCollaborationUsage
+from app.models.workspace import Workspace
+from app.models.workspace_member import WorkspaceMember
+from app.models.channel import Channel
+from app.models.channel_member import ChannelMember
 
 __all__ = [
     "Tenant",
@@ -33,4 +39,11 @@ __all__ = [
     "ApprovalDelegation",
     "NotificationPreference",
     "Subscription",
+    "TenantOnboarding",
+    "TenantCollaborationSettings",
+    "TenantCollaborationUsage",
+    "Workspace",
+    "WorkspaceMember",
+    "Channel",
+    "ChannelMember",
 ]

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import API from "../api/axios";
-import Sidebar from "../components/Sidebar";
 import { toast } from "../utils/toast";
 
 export default function Notifications() {
@@ -53,10 +52,7 @@ export default function Notifications() {
   };
 
   return (
-    <div className="flex">
-      <Sidebar />
-
-      <div className="flex-1 p-6">
+    <div className="p-6">
         <h1 className="text-3xl font-bold mb-6">
           Notifications
         </h1>
@@ -94,7 +90,6 @@ export default function Notifications() {
             </div>
           ))}
         </div>
-      </div>
     </div>
   );
 }

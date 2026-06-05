@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import API from "../api/axios";
-import Sidebar from "../components/Sidebar";
 
 export default function AIInsights() {
   const [summary, setSummary] = useState(null);
@@ -28,10 +27,7 @@ export default function AIInsights() {
   }, []);
 
   return (
-    <div className="flex">
-      <Sidebar />
-
-      <div className="flex-1 p-6">
+    <div className="p-6">
         <h1 className="text-3xl font-bold mb-6">
           AI Insights
         </h1>
@@ -68,7 +64,6 @@ export default function AIInsights() {
             </>
           )}
         </div>
-      </div>
     </div>
   );
 }

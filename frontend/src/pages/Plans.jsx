@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 import API from "../api/axios";
-import Sidebar from "../components/Sidebar";
-import Navbar from "../components/Navbar";
 import PlanCard from "../components/PlanCard";
 
 export default function Plans() {
@@ -51,26 +49,14 @@ export default function Plans() {
 
   if (loading) {
     return (
-      <div className="flex">
-        <Sidebar />
-        <div className="flex-1 bg-gray-100 min-h-screen">
-          <Navbar />
-          <div className="p-10">
-            <p>Loading...</p>
-          </div>
-        </div>
+      <div className="p-10">
+        <p>Loading...</p>
       </div>
     );
   }
 
   return (
-    <div className="flex">
-      <Sidebar />
-
-      <div className="flex-1 bg-gray-100 min-h-screen">
-        <Navbar />
-
-        <div className="p-10">
+    <div className="p-10">
 
           {/* Header */}
           <div className="mb-10">
@@ -140,8 +126,6 @@ export default function Plans() {
             ))}
           </div>
 
-        </div>
-      </div>
     </div>
   );
 }

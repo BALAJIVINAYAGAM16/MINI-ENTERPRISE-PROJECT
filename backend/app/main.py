@@ -24,6 +24,13 @@ from app.models import (  # Import all models to register them with SQLAlchemy
     ApprovalDelegation,
     NotificationPreference,
     Subscription,
+    TenantOnboarding,
+    TenantCollaborationSettings,
+    TenantCollaborationUsage,
+    Workspace,
+    WorkspaceMember,
+    Channel,
+    ChannelMember,
 )
 from app.routers import (
     activity,
@@ -45,6 +52,11 @@ from app.routers import (
     approval_escalations,
     approval_delegations,
     notification_preferences,
+    tanents,
+    onboarding,
+    workspaces,
+    workspace_members,
+    channels,
 )
 
 logging.basicConfig(
@@ -117,6 +129,11 @@ app.include_router(sla_tracking.router)
 app.include_router(approval_escalations.router)
 app.include_router(approval_delegations.router)
 app.include_router(notification_preferences.router)
+app.include_router(tanents.router)
+app.include_router(onboarding.router)
+app.include_router(workspaces.router)
+app.include_router(workspace_members.router)
+app.include_router(channels.router)
 
 # EXCEPTION HANDLERS
 from fastapi.responses import JSONResponse

@@ -4,6 +4,14 @@ const API = axios.create({
   baseURL: "http://127.0.0.1:8000",
 });
 
+let refreshPromise = null;
+
+const clearAuth = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("refreshToken");
+  window.dispatchEvent(new Event("auth:logout"));
+};
+
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) {
@@ -29,18 +37,25 @@ API.interceptors.response.use(
     originalRequest._retry = true;
 
     try {
-      const res = await axios.post(`${API.defaults.baseURL}/auth/refresh`, {
-        refresh_token: refreshToken,
-      });
+      refreshPromise ??= axios
+        .post(`${API.defaults.baseURL}/auth/refresh`, {
+          refresh_token: refreshToken,
+        })
+        .finally(() => {
+          refreshPromise = null;
+        });
+
+      const res = await refreshPromise;
+
       localStorage.setItem("token", res.data.access_token);
       if (res.data.refresh_token) {
         localStorage.setItem("refreshToken", res.data.refresh_token);
       }
+      originalRequest.headers = originalRequest.headers || {};
       originalRequest.headers.Authorization = `Bearer ${res.data.access_token}`;
       return API(originalRequest);
     } catch (refreshError) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("refreshToken");
+      clearAuth();
       return Promise.reject(refreshError);
     }
   }

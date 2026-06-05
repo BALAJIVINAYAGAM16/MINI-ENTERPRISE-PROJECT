@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
+from typing import Optional
 
 
 class CheckoutRequest(BaseModel):
@@ -14,21 +15,21 @@ class CheckoutResponse(BaseModel):
 class PlanDetailsResponse(BaseModel):
     credits: int
     price: int
-    price_id: str
+    price_id: Optional[str] = None
     description: str
-    features: list
+    features: list[str]
 
 
 class SubscriptionDetailsResponse(BaseModel):
     id: int
     plan: str
     credits: int
-    stripe_customer_id: str = None
+    stripe_customer_id: Optional[str] = None
     is_active: bool
-    billing_cycle_start: datetime
-    billing_cycle_end: datetime = None
+    billing_cycle_start: Optional[datetime] = None
+    billing_cycle_end: Optional[datetime] = None
     created_at: datetime
-    plan_details: PlanDetailsResponse = None
+    plan_details: Optional[PlanDetailsResponse] = None
 
     class Config:
         from_attributes = True

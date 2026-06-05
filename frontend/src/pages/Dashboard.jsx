@@ -4,8 +4,6 @@ import { Link, useNavigate } from "react-router-dom";
 import API from "../api/axios";
 import { assignTask, deleteTask } from "../api/taskApi";
 
-import Navbar from "../components/Navbar";
-import Sidebar from "../components/Sidebar";
 import DashboardInsights from "../components/Dashboard";
 import UserSelect from "../components/UserSelect";
 import CreditCard from "../components/CreditCard";
@@ -161,18 +159,7 @@ export default function Dashboard() {
 
   return (
 
-    <div className="flex bg-slate-100 min-h-screen">
-
-      {/* Sidebar */}
-      <Sidebar />
-
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col">
-
-        {/* Navbar */}
-        <Navbar />
-
-        <div className="p-6 md:p-8">
+    <div className="bg-slate-100">
 
           {/* Top SaaS Cards */}
           <div className="grid md:grid-cols-3 gap-6 mb-8">
@@ -384,10 +371,6 @@ export default function Dashboard() {
             </div>
 
           )}
-
-        </div>
-
-      </div>
 
     </div>
 

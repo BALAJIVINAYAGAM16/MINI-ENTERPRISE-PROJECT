@@ -3,7 +3,6 @@ import API from "../api/axios";
 import { useParams, useNavigate } from "react-router-dom";
 import UserSelect from "../components/UserSelect";
 import { assignTask } from "../api/taskApi";
-import Navbar from "../components/Navbar";
 
 export default function EditTask() {
   const { id } = useParams();
@@ -31,8 +30,7 @@ export default function EditTask() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100">
-      <Navbar />
+    <div>
       <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
         <form onSubmit={handleUpdate} className="rounded-2xl bg-white p-6 shadow-md space-y-4">
           <div>

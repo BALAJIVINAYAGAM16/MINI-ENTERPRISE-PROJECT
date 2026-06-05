@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { AuthContext } from "./auth-context";
 import API from "../api/axios";
 
@@ -20,6 +20,14 @@ export const AuthProvider = ({ children }) => {
     setToken(null);
     setUser(null);
   }, []);
+
+  useEffect(() => {
+    window.addEventListener("auth:logout", logout);
+
+    return () => {
+      window.removeEventListener("auth:logout", logout);
+    };
+  }, [logout]);
 
   const fetchUser = useCallback(async () => {
     if (token) {

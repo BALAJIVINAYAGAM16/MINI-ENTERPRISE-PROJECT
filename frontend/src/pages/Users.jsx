@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { fetchUsers } from "../api/userApi";
-import Navbar from "../components/Navbar";
 
 export default function Users() {
   const [users, setUsers] = useState([]);
@@ -14,10 +13,7 @@ export default function Users() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <Navbar />
-
-      <div className="p-6">
+    <div className="p-6">
         <h2 className="text-xl font-bold mb-4">Users</h2>
 
         {users.length === 0 ? (
@@ -33,7 +29,6 @@ export default function Users() {
             </div>
           ))
         )}
-      </div>
     </div>
   );
 }

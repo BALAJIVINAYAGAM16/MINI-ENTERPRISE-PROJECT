@@ -2,10 +2,12 @@ from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 import stripe
 from app.core.config import PASSWORD_RESET_TOKEN_EXPIRE_MINUTES, STRIPE_SECRET_KEY
 from app.core.dependencies import get_current_user
+from app.core.slug import slugify
 from app.core.security import (
     create_access_token,
     create_password_reset_token,
@@ -18,7 +20,7 @@ from app.core.security import (
 from app.db.database import get_db
 from app.models.user import User
 from app.models.tenant import Tenant
-from app.models.subcription import Subscription
+from app.models.subscription import Subscription
 from app.schemas.token import PasswordResetConfirm, PasswordResetRequest, RefreshTokenRequest, Token
 from app.schemas.user import UserCreate, UserOut
 
@@ -43,34 +45,39 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
 
     try:
-        # Create a tenant for the user
-        tenant = Tenant(
-            organization_name=user.name,
-            domain=user.email.split("@")[1]
-        )
-        db.add(tenant)
-        db.flush()  # Flush to get the tenant ID without committing
-        
-        # Create a Stripe customer (if key is configured)
-        stripe_customer_id = None
-        if STRIPE_SECRET_KEY and STRIPE_SECRET_KEY != "":
-            try:
-                stripe_customer = stripe.Customer.create(email=user.email)
-                stripe_customer_id = stripe_customer.id
-            except stripe.error.StripeError as stripe_err:
-                # Log stripe error but continue with registration
-                import logging
-                logging.error(f"Stripe customer creation failed: {str(stripe_err)}")
-        
-        # Create a subscription for the tenant
-        subscription = Subscription(
-            tenant_id=tenant.id,
-            plan="Basic",
-            credits=100,
-            stripe_customer_id=stripe_customer_id
-        )
-        db.add(subscription)
-        db.flush()
+        domain = user.email.split("@", 1)[1].lower()
+        tenant_slug = slugify(domain)
+        tenant = db.query(Tenant).filter(Tenant.slug == tenant_slug).first()
+
+        if tenant is None:
+            tenant = Tenant(
+                name=domain.split(".", 1)[0].title(),
+                slug=tenant_slug,
+                contact_email=user.email,
+                status="ACTIVE",
+            )
+            db.add(tenant)
+            db.flush()
+
+            # Create a Stripe customer only for a newly-created tenant.
+            stripe_customer_id = None
+            if STRIPE_SECRET_KEY:
+                try:
+                    stripe_customer = stripe.Customer.create(email=user.email)
+                    stripe_customer_id = stripe_customer.id
+                except stripe.error.StripeError as stripe_err:
+                    # Log stripe error but continue with registration.
+                    import logging
+                    logging.error(f"Stripe customer creation failed: {str(stripe_err)}")
+
+            subscription = Subscription(
+                tenant_id=tenant.id,
+                plan="Basic",
+                credits=100,
+                stripe_customer_id=stripe_customer_id,
+            )
+            db.add(subscription)
+            db.flush()
         
         # Create the user with tenant_id
         new_user = User(
@@ -84,6 +91,14 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
         db.commit()
         db.refresh(new_user)
         return new_user
+    except IntegrityError as e:
+        db.rollback()
+        import logging
+        logging.error(f"Registration integrity error: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Registration conflicts with an existing account or organization.",
+        ) from e
     except Exception as e:
         db.rollback()
         import logging
