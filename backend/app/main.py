@@ -31,6 +31,10 @@ from app.models import (  # Import all models to register them with SQLAlchemy
     WorkspaceMember,
     Channel,
     ChannelMember,
+    WorkspaceMessage,
+    ChannelMessage,
+    TaskDocument,
+    ApprovalDocument,
 )
 from app.routers import (
     activity,
@@ -57,6 +61,12 @@ from app.routers import (
     workspaces,
     workspace_members,
     channels,
+    workspace_messages,
+    channel_messages,
+    workspace_tasks,
+    channel_tasks,
+    task_documents,
+    approval_documents,
 )
 
 logging.basicConfig(
@@ -134,6 +144,12 @@ app.include_router(onboarding.router)
 app.include_router(workspaces.router)
 app.include_router(workspace_members.router)
 app.include_router(channels.router)
+app.include_router(workspace_messages.router)
+app.include_router(channel_messages.router)
+app.include_router(workspace_tasks.router)
+app.include_router(channel_tasks.router)
+app.include_router(task_documents.router)
+app.include_router(approval_documents.router)
 
 # EXCEPTION HANDLERS
 from fastapi.responses import JSONResponse

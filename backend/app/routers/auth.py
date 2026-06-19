@@ -50,8 +50,11 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
         tenant = db.query(Tenant).filter(Tenant.slug == tenant_slug).first()
 
         if tenant is None:
+            tenant_name = domain.split(".", 1)[0].title()
             tenant = Tenant(
-                name=domain.split(".", 1)[0].title(),
+                name=tenant_name,
+                organization_name=tenant_name,
+                domain=domain,
                 slug=tenant_slug,
                 contact_email=user.email,
                 status="ACTIVE",

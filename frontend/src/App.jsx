@@ -22,6 +22,8 @@ import KanbanBoard from "./components/KanbanBoard";
 import ApprovalPanel from "./components/ApprovalPanel";
 
 import AppRoutes from "./api/AppRoutes";
+import WorkspaceMessages from "./pages/workspaces/WorkspaceMessages";
+import WorkspaceTasks from "./pages/workspaces/WorkspaceTasks";
 
 function Layout() {
   return (
@@ -137,6 +139,15 @@ export default function App() {
       />
 
       {/* Protected Application */}
+      <Route
+  path="/workspaces/:id/messages"
+  element={<WorkspaceMessages />}
+/>
+
+<Route
+  path="/workspaces/:id/tasks"
+  element={<WorkspaceTasks />}
+/>
 
       <Route
         path="/*"

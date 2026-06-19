@@ -11,6 +11,9 @@ def ensure_schema(engine: Engine):
     task_columns = {column["name"] for column in inspector.get_columns("tasks")}
     missing_task_columns = {
         "updated_by": "INTEGER",
+        "tenant_id": "INTEGER",
+        "workspace_id": "INTEGER",
+        "channel_id": "INTEGER",
         "sla_status": "VARCHAR",
         "sla_due_time": "TIMESTAMP",
         "is_sla_breached": "BOOLEAN DEFAULT FALSE",
@@ -23,15 +26,74 @@ def ensure_schema(engine: Engine):
     if "approvals" in tables:
         approval_columns = {column["name"] for column in inspector.get_columns("approvals")}
         missing_approval_columns = {
+            "tenant_id": "INTEGER",
+            "workspace_id": "INTEGER",
+            "channel_id": "INTEGER",
+            "title": "VARCHAR",
+            "description": "TEXT",
+            "requested_by": "INTEGER",
+            "approval_type": "VARCHAR(20) DEFAULT 'EMPLOYEE'",
+            "status": "VARCHAR(20) DEFAULT 'PENDING'",
+            "current_level": "VARCHAR(30) DEFAULT 'LEVEL_1_MANAGER'",
+            "assigned_to": "INTEGER",
+            "required_approver_role": "VARCHAR",
+            "approved_by": "INTEGER",
+            "approved_at": "TIMESTAMP",
+            "rejected_by": "INTEGER",
+            "rejection_reason": "TEXT",
+            "rejected_at": "TIMESTAMP",
             "sla_status": "VARCHAR",
             "sla_due_time": "TIMESTAMP",
             "is_escalated": "BOOLEAN DEFAULT FALSE",
             "current_escalation_to": "INTEGER",
+            "escalated_at": "TIMESTAMP",
+            "created_at": "TIMESTAMP",
+            "updated_at": "TIMESTAMP",
         }
         with engine.begin() as connection:
             for column_name, column_type in missing_approval_columns.items():
                 if column_name not in approval_columns:
                     connection.execute(text(f"ALTER TABLE approvals ADD COLUMN {column_name} {column_type}"))
+                    approval_columns.add(column_name)
+            if "status" in approval_columns:
+                connection.execute(
+                    text(
+                        "UPDATE approvals "
+                        "SET status = UPPER(status) "
+                        "WHERE status IS NOT NULL"
+                    )
+                )
+                connection.execute(
+                    text(
+                        "UPDATE approvals "
+                        "SET status = 'PENDING' "
+                        "WHERE status IS NULL"
+                    )
+                )
+            if "approval_type" in approval_columns:
+                connection.execute(
+                    text(
+                        "UPDATE approvals "
+                        "SET approval_type = 'EMPLOYEE' "
+                        "WHERE approval_type IS NULL"
+                    )
+                )
+            if "current_level" in approval_columns:
+                connection.execute(
+                    text(
+                        "UPDATE approvals "
+                        "SET current_level = 'LEVEL_1_MANAGER' "
+                        "WHERE current_level IS NULL"
+                    )
+                )
+            if "is_escalated" in approval_columns:
+                connection.execute(
+                    text(
+                        "UPDATE approvals "
+                        "SET is_escalated = FALSE "
+                        "WHERE is_escalated IS NULL"
+                    )
+                )
 
     if "notifications" in tables:
         notification_columns = {column["name"] for column in inspector.get_columns("notifications")}
@@ -97,6 +159,8 @@ def ensure_schema(engine: Engine):
         tenant_columns = {column["name"] for column in inspector.get_columns("tenants")}
         missing_tenant_columns = {
             "name": "VARCHAR(255)",
+            "organization_name": "VARCHAR(255)",
+            "domain": "VARCHAR(255)",
             "slug": "VARCHAR(100)",
             "contact_email": "VARCHAR(255)",
             "phone": "VARCHAR(50)",
@@ -109,6 +173,38 @@ def ensure_schema(engine: Engine):
             for column_name, column_type in missing_tenant_columns.items():
                 if column_name not in tenant_columns:
                     connection.execute(text(f"ALTER TABLE tenants ADD COLUMN {column_name} {column_type}"))
+                    tenant_columns.add(column_name)
+            if {"name", "organization_name"}.issubset(tenant_columns):
+                connection.execute(
+                    text(
+                        "UPDATE tenants "
+                        "SET organization_name = COALESCE(organization_name, name) "
+                        "WHERE organization_name IS NULL"
+                    )
+                )
+                connection.execute(
+                    text(
+                        "UPDATE tenants "
+                        "SET name = COALESCE(name, organization_name) "
+                        "WHERE name IS NULL"
+                    )
+                )
+            if "slug" in tenant_columns:
+                connection.execute(
+                    text(
+                        "UPDATE tenants "
+                        "SET slug = 'tenant-' || id "
+                        "WHERE slug IS NULL"
+                    )
+                )
+            if "contact_email" in tenant_columns:
+                connection.execute(
+                    text(
+                        "UPDATE tenants "
+                        "SET contact_email = 'tenant-' || id || '@example.com' "
+                        "WHERE contact_email IS NULL"
+                    )
+                )
 
     if "tenant_collaboration_settings" in tables:
         settings_columns = {

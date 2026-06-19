@@ -4,7 +4,7 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app.core.cache import cache
-from app.models.approval import Approval
+from app.models.approval import Approval, ApprovalStatus
 from app.models.task import Task
 from app.services.ai_service import (
     generate_ai_summary,
@@ -42,7 +42,7 @@ def get_dashboard_summary(user, db: Session):
     })
 
     approval_query = db.query(Approval).filter(
-        Approval.status == "pending"
+        Approval.status == ApprovalStatus.PENDING
     )
 
     if user.role == "employee":
@@ -104,17 +104,22 @@ def get_approval_stats(user, db: Session):
     )
 
     counts = {
-        "approved": 0,
-        "rejected": 0,
-        "pending": 0
+        ApprovalStatus.APPROVED.value: 0,
+        ApprovalStatus.REJECTED.value: 0,
+        ApprovalStatus.PENDING.value: 0,
+        ApprovalStatus.ESCALATED.value: 0,
+        ApprovalStatus.ON_HOLD.value: 0,
     }
 
     counts.update({
-        status_name: count
+        getattr(status_name, "value", status_name): count
         for status_name, count in data
     })
 
-    return counts
+    return {
+        status_name.lower(): count
+        for status_name, count in counts.items()
+    }
 
 
 # =========================

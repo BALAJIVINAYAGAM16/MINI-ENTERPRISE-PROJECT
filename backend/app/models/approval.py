@@ -25,6 +25,8 @@ class Approval(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     tenant_id = Column(Integer, ForeignKey("tenants.id"), nullable=False, index=True)
+    workspace_id = Column(Integer, ForeignKey("workspaces.id"), nullable=True, index=True)
+    channel_id = Column(Integer, ForeignKey("channels.id"), nullable=True, index=True)
     title = Column(String, nullable=False)
     description = Column(Text)
 
@@ -63,4 +65,6 @@ class Approval(Base):
     rejector_user = relationship("User", foreign_keys=[rejected_by])
     escalation_user = relationship("User", foreign_keys=[current_escalation_to])
     tenant = relationship("Tenant", back_populates="approvals")
+    workspace = relationship("Workspace")
+    channel = relationship("Channel")
     history = relationship("ApprovalHistory", back_populates="approval", cascade="all, delete-orphan")

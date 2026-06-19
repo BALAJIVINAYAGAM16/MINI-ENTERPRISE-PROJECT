@@ -21,6 +21,10 @@ from app.models.workspace import Workspace
 from app.models.workspace_member import WorkspaceMember
 from app.models.channel import Channel
 from app.models.channel_member import ChannelMember
+from app.models.workspace_message import WorkspaceMessage
+from app.models.channel_message import ChannelMessage
+from app.models.task_document import TaskDocument
+from app.models.approval_document import ApprovalDocument
 
 __all__ = [
     "Tenant",
@@ -46,4 +50,8 @@ __all__ = [
     "WorkspaceMember",
     "Channel",
     "ChannelMember",
+    "WorkspaceMessage",
+    "ChannelMessage",
+    "TaskDocument",
+    "ApprovalDocument",
 ]

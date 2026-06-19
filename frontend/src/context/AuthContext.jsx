@@ -40,6 +40,10 @@ export const AuthProvider = ({ children }) => {
     }
   }, [token]);
 
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
+
   const value = useMemo(() => ({ 
     token, 
     login, 

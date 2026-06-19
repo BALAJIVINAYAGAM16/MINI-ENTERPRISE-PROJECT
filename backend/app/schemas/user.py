@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import Enum
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, EmailStr, Field, field_validator
 import re
 
 from app.core.security import BCRYPT_MAX_PASSWORD_BYTES
@@ -63,7 +63,7 @@ class UserOut(UserBase):
 class UserSummary(BaseModel):
     id: int
     name: str
-    email: EmailStr
+    email: str
     role: UserRole
     is_active: bool
 

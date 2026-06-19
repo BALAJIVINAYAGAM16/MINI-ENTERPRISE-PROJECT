@@ -7,6 +7,9 @@ class Task(Base):
     __tablename__ = "tasks"
 
     id = Column(Integer, primary_key=True, index=True)
+    tenant_id = Column(Integer, ForeignKey("tenants.id"), nullable=True, index=True)
+    workspace_id = Column(Integer, ForeignKey("workspaces.id"), nullable=True, index=True)
+    channel_id = Column(Integer, ForeignKey("channels.id"), nullable=True, index=True)
     title = Column(String, index=True)
     description = Column(String)
 
@@ -32,6 +35,8 @@ class Task(Base):
 
     created_by = relationship("User", foreign_keys=[created_by_id])
     assigned_to = relationship("User", foreign_keys=[assigned_to_id])
+    workspace = relationship("Workspace")
+    channel = relationship("Channel")
 
     @property
     def assigned_to_name(self):

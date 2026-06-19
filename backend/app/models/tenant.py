@@ -26,6 +26,16 @@ class Tenant(Base):
         nullable=False
     )
 
+    organization_name = Column(
+        String(255),
+        nullable=False
+    )
+
+    domain = Column(
+        String(255),
+        nullable=True
+    )
+
     slug = Column(
         String(100),
         unique=True,

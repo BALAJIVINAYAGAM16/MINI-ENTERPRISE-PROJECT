@@ -259,7 +259,7 @@ export default function Sidebar() {
 
         <div className="space-y-2">
 
-          <Link
+          {/* <Link
             to="/plans"
             className={navClass("/plans")}
           >
@@ -273,15 +273,15 @@ export default function Sidebar() {
           >
             <CreditCard size={18} />
             Billing
-          </Link>
+          </Link> */}
 
-          <Link
+          {/* <Link
             to="/organization"
             className={navClass("/organization")}
           >
             <Building2 size={18} />
             Organization
-          </Link>
+          </Link> */}
 
         </div>
       </div>

@@ -89,6 +89,7 @@ def update_organization(
     # Update only provided fields
     if org_data.organization_name:
         tenant.organization_name = org_data.organization_name
+        tenant.name = org_data.organization_name
     if org_data.domain:
         tenant.domain = org_data.domain
     

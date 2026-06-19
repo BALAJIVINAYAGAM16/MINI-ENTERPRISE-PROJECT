@@ -48,15 +48,21 @@ def seed():
         tenant = get_or_create(
             db,
             Tenant,
-            organization_name="Acme Workflow Labs",
-            domain="acme.test",
+            slug="acme-test",
+            defaults={
+                "name": "Acme Workflow Labs",
+                "organization_name": "Acme Workflow Labs",
+                "domain": "acmeworkflow.com",
+                "contact_email": "admin@acmeworkflow.com",
+                "status": "ACTIVE",
+            },
         )
 
         users = {
             "admin": get_or_create(
                 db,
                 User,
-                email="admin@acme.test",
+                email="admin@acmeworkflow.com",
                 defaults={
                     "name": "Asha Admin",
                     "role": "admin",
@@ -67,7 +73,7 @@ def seed():
             "manager": get_or_create(
                 db,
                 User,
-                email="manager@acme.test",
+                email="manager@acmeworkflow.com",
                 defaults={
                     "name": "Maya Manager",
                     "role": "manager",
@@ -78,7 +84,7 @@ def seed():
             "employee": get_or_create(
                 db,
                 User,
-                email="employee@acme.test",
+                email="employee@acmeworkflow.com",
                 defaults={
                     "name": "Evan Employee",
                     "role": "employee",
@@ -89,7 +95,7 @@ def seed():
             "auditor": get_or_create(
                 db,
                 User,
-                email="auditor@acme.test",
+                email="auditor@acmeworkflow.com",
                 defaults={
                     "name": "Anika Auditor",
                     "role": "auditor",
@@ -198,7 +204,7 @@ def seed():
                 "title": "Approve enterprise renewal",
                 "description": "Renew Gold subscription and support package.",
                 "requested_by": users["manager"].id,
-                "status": "pending",
+                "status": "PENDING",
                 "current_level": "admin",
                 "sla_status": "ACTIVE",
                 "sla_due_time": now + timedelta(hours=8),
@@ -208,7 +214,7 @@ def seed():
                 "title": "Approve delayed access exception",
                 "description": "Temporary access exception for audit remediation.",
                 "requested_by": users["employee"].id,
-                "status": "pending",
+                "status": "PENDING",
                 "current_level": "manager",
                 "sla_status": "BREACHED",
                 "sla_due_time": now - timedelta(hours=2),
